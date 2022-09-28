@@ -45,12 +45,13 @@ EOD;
 
     const DEFAULT_VERSION_TO_INSTALL = '0.8.1';
 
-    public static function postUpdateAndInstall(Event $event)
+    public static function postUpdateAndInstall()
     {
         $platform = php_uname('s'); // stuff like Darwin etc
         $architecture = php_uname('m'); // x86_64
 
-        $extra = $event->getComposer()->getPackage()->getExtra();
+        $composerJson = json_decode(file_get_contents('composer.json'), true);
+        $extra = isset($composerJson['extra']) ? $composerJson['extra'] : [];
         $version = self::DEFAULT_VERSION_TO_INSTALL;
         $versionMessage = '';
         if (isset($extra['prunner-version'])) {
